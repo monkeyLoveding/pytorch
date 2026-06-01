@@ -66,6 +66,7 @@ jobs:
         run: |
           TIMESTAMP=$(date -u +%Y%m%d%H%M)
           cd .ci/docker
+          chmod +x ./docker_build.sh
           TIMESTAMP=${TIMESTAMP} ./docker_build.sh ${{ matrix.tag }}
 
           IMAGE_TAG="${{ matrix.tag }}-${TIMESTAMP}"
