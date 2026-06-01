@@ -7,7 +7,6 @@ on:
         description: 'Single image tag to build (without timestamp). Leave empty to build all.'
         required: false
         type: string
-        default: ''
   push:
     paths:
       - .ci/docker/**
@@ -72,9 +71,7 @@ jobs:
           IMAGE_TAG="${{ matrix.tag }}-${TIMESTAMP}"
           REMOTE_IMAGE="${{ env.REGISTRY }}/${{ env.SWR_ORG }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
           docker tag "${IMAGE_TAG}" "${REMOTE_IMAGE}"
-          if [[ "$GITHUB_EVENT_NAME" != "push" ]]; then
-            docker push "${REMOTE_IMAGE}"
-          fi
+          docker push "${REMOTE_IMAGE}"
           mkdir -p /tmp/result
           echo "${REMOTE_IMAGE}" > "/tmp/result/${{ matrix.tag }}.txt"
           echo "Pushed ${REMOTE_IMAGE}"
