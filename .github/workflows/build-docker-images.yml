@@ -35,7 +35,6 @@ jobs:
 
   build:
     needs: matrix
-    environment: QUAY_USERNAME
     permissions:
       contents: read
     strategy:
@@ -72,8 +71,9 @@ jobs:
           IMAGE_TAG="${{ matrix.tag }}-${TIMESTAMP}"
           REMOTE_IMAGE="${{ env.REGISTRY }}/${{ env.SWR_ORG }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
           docker tag "${IMAGE_TAG}" "${REMOTE_IMAGE}"
-          docker push "${REMOTE_IMAGE}"
-
+          if [[ "$GITHUB_EVENT_NAME" != "push" ]]; then
+            docker push "${REMOTE_IMAGE}"
+          fi
           mkdir -p /tmp/result
           echo "${REMOTE_IMAGE}" > "/tmp/result/${{ matrix.tag }}.txt"
           echo "Pushed ${REMOTE_IMAGE}"
